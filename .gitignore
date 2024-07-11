@@ -1,0 +1,15 @@
+__pycache__
+image
+driver
+env
+
+*.sqlite3
+*.log
+*.jpg
+*.mp4
+*.m4a
+*psaux.txt
+*.DS_Store
+*.json
+*.png
+*.txt
