@@ -2,11 +2,10 @@
 import sys
 import json
 import datetime
-from time import sleep, time
+from time import time
 from pathlib import Path
 from src.py_logging import py_logger, remove_old_log
-from django.shortcuts import render
-from django.http import HttpResponse,FileResponse
+from django.http import HttpResponse
 from . import models
 import requests
 from bs4 import BeautifulSoup
@@ -78,9 +77,7 @@ with open(f"{str(py_path)}/config/line_bot_dictionary.json", encoding="utf-8") a
     sex_club_list = dictionary_json["sex_club_list"]
     spirit_chamber = dictionary_json["spirit_chamber"]
     IU_fans_club_chat_room = dictionary_json["IU_fans_club_chat_room"]
-    permission_dict_chat_room_hometown = dictionary_json[
-        "permission_dict_chat_room_hometown"
-    ]
+    permission_dict_chat_room_hometown = dictionary_json["permission_dict_chat_room_hometown"]
     legend_family = dictionary_json["legend_family"]
     line_user_dict = dictionary_json["line_user_dict"]
     keyword_dict = dictionary_json["keyword_dict"]
@@ -213,9 +210,7 @@ def reply_keyword(reply_token, message_text):
         url_keyword = dog_dict[message_text]
     line_bot_api.reply_message(
         reply_token,
-        ImageSendMessage(
-            original_content_url=url_keyword, preview_image_url=url_keyword
-        ),
+        ImageSendMessage(original_content_url=url_keyword, preview_image_url=url_keyword),
     )
 
 
@@ -223,9 +218,7 @@ def reply_dog_card(reply_token):
     url_keyword = random.choice(list(dog_dict.values()))
     line_bot_api.reply_message(
         reply_token,
-        ImageSendMessage(
-            original_content_url=url_keyword, preview_image_url=url_keyword
-        ),
+        ImageSendMessage(original_content_url=url_keyword, preview_image_url=url_keyword),
     )
 
 
@@ -237,31 +230,23 @@ def reply_sticker(reply_token, message_text):
 
 
 def reply_porn(reply_token, message_text):
-    input_url = (
-        "https://www.xvideos.com/?k=" + message_text + "&sort=relevance&quality=hd"
-    )
+    input_url = "https://www.xvideos.com/?k=" + message_text + "&sort=relevance&quality=hd"
     r = requests.get(input_url, headers=headers_postman, timeout=10)
     soup = BeautifulSoup(r.text, "html.parser")
     video_all = soup.find_all("div", class_="thumb")
     video = str(video_all[random.randint(1, 27)])
-    input_url = (
-        "https://www.xvideos.com" + video[video.find("href") + 6 : video.find('">', 20)]
-    )
+    input_url = "https://www.xvideos.com" + video[video.find("href") + 6 : video.find('">', 20)]
     r = requests.get(input_url, headers=headers_postman, timeout=10)
     video = r.text
     output_url = video[
-        video.find("setVideoUrlHigh")
-        + 17 : video.find("')", video.find("setVideoUrlHigh"))
+        video.find("setVideoUrlHigh") + 17 : video.find("')", video.find("setVideoUrlHigh"))
     ]
     picture_url = video[
-        video.find("setThumbUrl169")
-        + 16 : video.find("')", video.find("setThumbUrl169"))
+        video.find("setThumbUrl169") + 16 : video.find("')", video.find("setThumbUrl169"))
     ]
     line_bot_api.reply_message(
         reply_token,
-        VideoSendMessage(
-            original_content_url=output_url, preview_image_url=picture_url
-        ),
+        VideoSendMessage(original_content_url=output_url, preview_image_url=picture_url),
     )
 
 
@@ -270,18 +255,14 @@ def reply_xvideos(reply_token, message_text):
     r = requests.get(input_url, headers=headers_postman, timeout=10)
     video = r.text
     output_url = video[
-        video.find("setVideoUrlHigh")
-        + 17 : video.find("')", video.find("setVideoUrlHigh"))
+        video.find("setVideoUrlHigh") + 17 : video.find("')", video.find("setVideoUrlHigh"))
     ]
     picture_url = video[
-        video.find("setThumbUrl169")
-        + 16 : video.find("')", video.find("setThumbUrl169"))
+        video.find("setThumbUrl169") + 16 : video.find("')", video.find("setThumbUrl169"))
     ]
     line_bot_api.reply_message(
         reply_token,
-        VideoSendMessage(
-            original_content_url=output_url, preview_image_url=picture_url
-        ),
+        VideoSendMessage(original_content_url=output_url, preview_image_url=picture_url),
     )
 
 
@@ -289,10 +270,7 @@ def reply_douyin(reply_token, message_text):
     # url preprocessing
     if message_text.find("v.douyin.com") != -1:
         input_url = message_text[
-            message_text.find("http") : message_text.find(
-                "/", message_text.find("http") + 21
-            )
-            + 1
+            message_text.find("http") : message_text.find("/", message_text.find("http") + 21) + 1
         ]
         redirect_url = requests.get(input_url, headers=headers_hashtag, timeout=10).url
         item_ids = redirect_url[redirect_url.find("video") + 6 : redirect_url.find("?")]
@@ -301,9 +279,7 @@ def reply_douyin(reply_token, message_text):
         item_ids = redirect_url[redirect_url.find("video") + 6 : redirect_url.find("?")]
     redirect_url = redirect_url[0 : redirect_url.find("?")]
     r = requests.get(redirect_url, headers=headers_hashtag, timeout=10)
-    input_url = (
-        f"https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={item_ids}"
-    )
+    input_url = f"https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={item_ids}"
     log.info(input_url)
     r = requests.get(input_url, headers=headers_hashtag, timeout=10)
     output_url = r.json()["item_list"][0]["video"]["play_addr"]["url_list"][0]
@@ -314,9 +290,7 @@ def reply_douyin(reply_token, message_text):
         picture_url = picture_url.replace("540x960", "300x400")
     line_bot_api.reply_message(
         reply_token,
-        VideoSendMessage(
-            original_content_url=output_url, preview_image_url=picture_url
-        ),
+        VideoSendMessage(original_content_url=output_url, preview_image_url=picture_url),
     )
 
 
@@ -325,9 +299,7 @@ def reply_tiktok(reply_token, message_text):
     r_text = r.text
     video_url = r_text[r_text.find("playAddr") + 11 : r_text.find("downloadAddr") - 3]
     video_url = video_url.encode("utf-8").decode("unicode_escape")
-    picture_url = r_text[
-        r_text.find("originCover") + 14 : r_text.find("dynamicCover") - 3
-    ]
+    picture_url = r_text[r_text.find("originCover") + 14 : r_text.find("dynamicCover") - 3]
     picture_url = picture_url.encode("utf-8").decode("unicode_escape")
     headers_tiktok_referer = {"referer": f"{video_url}"}
     r = requests.get(video_url, headers=headers_tiktok_referer, timeout=10)
@@ -340,9 +312,7 @@ def reply_tiktok(reply_token, message_text):
     warehouse_url = f"https://iufans.club/warehouse/tiktok/{ts}"
     line_bot_api.reply_message(
         reply_token,
-        VideoSendMessage(
-            original_content_url=warehouse_url, preview_image_url=picture_url
-        ),
+        VideoSendMessage(original_content_url=warehouse_url, preview_image_url=picture_url),
     )
 
 
@@ -353,15 +323,14 @@ def reply_IG(reply_token, chat_room, message_text):
         message_text = f"https://www.{message_text[8:]}"
     # picture, video of post
     if "/p/" in message_text or "/reel/" in message_text:  # Instagram
-        # log.info("IG post")
+        log.info("IG post")
         if message_text[0:31] == "https://www.instagram.com/reel/":
             message_text = message_text.replace("/reel/", "/p/")
         shortcode = message_text[
-            message_text.find("/p/")
-            + 3 : message_text.find("/", message_text.find("/p/") + 3)
+            message_text.find("/p/") + 3 : message_text.find("/", message_text.find("/p/") + 3)
         ]
         sub_page = f"https://www.instagram.com/p/{shortcode}/"
-        # log.info(shortcode)
+        log.info(shortcode)
 
         # init instaloader
         ig = instaloader.Instaloader()
@@ -376,15 +345,16 @@ def reply_IG(reply_token, chat_room, message_text):
             IG_post_title_ratio = "12%"
         else:
             IG_post_title_ratio = str(int(IG_post_title_lines * 5)) + "%"
-        # log.info(IG_post_title_lines)
-        # log.info(IG_post_title_ratio)
-
+        log.info(IG_post_title_lines)
+        log.info(IG_post_title_ratio)
+        log.info(post)
         # find meida_count
         media_num = post.mediacount
-        # log.info(media_num)
+        log.info(media_num)
         picture_list = []
         video_list = []
         if media_num > 1:
+            log.info("media")
             for each_post in post.get_sidecar_nodes():
                 if each_post.is_video:
                     video_list.append(each_post.display_url)
@@ -396,6 +366,8 @@ def reply_IG(reply_token, chat_room, message_text):
             video_list.append(post.video_url)
         else:
             picture_list.append(post.url)
+        log.info(picture_list)
+        log.info(video_list)
         # reply picture
         # reply multiple picture
         if len(picture_list) > 1:
@@ -534,9 +506,7 @@ def reply_IG(reply_token, chat_room, message_text):
             video_url = video_list[1]
             line_bot_api.reply_message(
                 reply_token,
-                VideoSendMessage(
-                    original_content_url=video_url, preview_image_url=thumbnail_url
-                ),
+                VideoSendMessage(original_content_url=video_url, preview_image_url=thumbnail_url),
             )
     # picture, video of story
     elif message_text[0:34] == "https://www.instagram.com/stories/":  # IG time limit
@@ -599,18 +569,15 @@ def reply_IG(reply_token, chat_room, message_text):
             end_like = r.text.find("}", r.text.find("edge_liked_by", start) + 24)
             try:
                 post_like = int(r.text[start_like:end_like])
-            except:
+            except Exception:
                 post_like = 9999999999
             likecount_list.append(post_like)
         for likecount_index, _ in enumerate(likecount_list):
             try:
-                if (
-                    likecount_list[likecount_index]
-                    != likecount_list[likecount_index + 1]
-                ):
+                if likecount_list[likecount_index] != likecount_list[likecount_index + 1]:
                     likecount_nums.append(likecount_list[likecount_index])
                     post_codes.append(post_list[likecount_index])
-            except:
+            except Exception:
                 if likecount_list[likecount_index] != likecount_list[0]:
                     likecount_nums.append(likecount_list[likecount_index])
                     post_codes.append(post_list[likecount_index])
@@ -684,9 +651,7 @@ def reply_hashtag(reply_token, message_text):
             loop_times = len(display_url_list)
         for _ in range(loop_times):
             display_url = display_url_list[likecount_list.index(max(likecount_list))]
-            display_url_list.remove(
-                display_url_list[likecount_list.index(max(likecount_list))]
-            )
+            display_url_list.remove(display_url_list[likecount_list.index(max(likecount_list))])
             likecount_list.remove(max(likecount_list))
             container = BubbleContainer(
                 size="giga",
@@ -714,14 +679,10 @@ def reply_fb(reply_token, message_text):
     if r.text.find("hd_src") != -1:
         output_url = re.search('hd_src:"(.+?)"', r.text).group(1)
         display_url = re.search("spriteIndexToURIMap:{(.+?)}", r.text)[1]
-        display_url = (
-            display_url[5 : display_url.find(",")].replace(",", "").replace('"', "")
-        )
+        display_url = display_url[5 : display_url.find(",")].replace(",", "").replace('"', "")
         line_bot_api.reply_message(
             reply_token,
-            VideoSendMessage(
-                original_content_url=output_url, preview_image_url=display_url
-            ),
+            VideoSendMessage(original_content_url=output_url, preview_image_url=display_url),
         )
     else:
         start = r.text.find("og:image") + 19
@@ -733,9 +694,7 @@ def reply_fb(reply_token, message_text):
         print(display_url)
         line_bot_api.reply_message(
             reply_token,
-            ImageSendMessage(
-                original_content_url=output_url, preview_image_url=display_url
-            ),
+            ImageSendMessage(original_content_url=output_url, preview_image_url=display_url),
         )
 
 
@@ -754,18 +713,14 @@ def reply_youtube(reply_token, message_text):
         display_url = f"https://i.ytimg.com/vi/{input_url[start:end]}/0.jpg"
     line_bot_api.reply_message(
         reply_token,
-        VideoSendMessage(
-            original_content_url=output_url, preview_image_url=display_url
-        ),
+        VideoSendMessage(original_content_url=output_url, preview_image_url=display_url),
         True,
     )
 
 
 def reply_ptt(reply_token, message_text):
     if message_text.find("www.ptt.cc") != -1:
-        message_text = message_text[
-            message_text.find("https") : message_text.find(".html") + 5
-        ]
+        message_text = message_text[message_text.find("https") : message_text.find(".html") + 5]
         message_text = (
             message_text.replace(".html", "")
             .replace("/", ".")
@@ -784,10 +739,7 @@ def reply_ptt(reply_token, message_text):
         end = output_url["content"].find("\n", start)
         if output_url["content"][start:end].find(".gif") == -1:
             if output_url["content"][start:end].find("i.imgur") == -1:
-                url_out = (
-                    output_url["content"][start:end].replace("imgur", "i.imgur")
-                    + ".jpg"
-                )
+                url_out = output_url["content"][start:end].replace("imgur", "i.imgur") + ".jpg"
             else:
                 url_out = output_url["content"][start:end]
             if url_out.find("https") == -1:
@@ -816,9 +768,7 @@ def reply_twitter(reply_token, message_text):
     data_1 = {"url": message_text}
     r = requests.post(url, data=data_1)
     url_out = r.text[
-        r.text.find('src="http://pbs')
-        + 5 : r.text.find(".jpg", r.text.find('src="http://pbs'))
-        + 4
+        r.text.find('src="http://pbs') + 5 : r.text.find(".jpg", r.text.find('src="http://pbs')) + 4
     ]
     if url_out.find("https") == -1:
         url_out = url_out.replace("http", "https")
@@ -984,26 +934,16 @@ def reply_9gag(reply_token, message_text):
         row_id = row_id + 1
     ngag_row = ngag_table.objects.get(id=row_id)
     if ngag_row.article_type == "mp4":
-        video_url = (
-            f"https://img-9gag-fun.9cache.com/photo/{ngag_row.article_id}_460sv.mp4"
-        )
-        display_url = (
-            f"https://img-9gag-fun.9cache.com/photo/{ngag_row.article_id}_700b.jpg"
-        )
+        video_url = f"https://img-9gag-fun.9cache.com/photo/{ngag_row.article_id}_460sv.mp4"
+        display_url = f"https://img-9gag-fun.9cache.com/photo/{ngag_row.article_id}_700b.jpg"
         line_bot_api.reply_message(
             reply_token,
-            VideoSendMessage(
-                original_content_url=video_url, preview_image_url=display_url
-            ),
+            VideoSendMessage(original_content_url=video_url, preview_image_url=display_url),
         )
         ngag_table.objects.filter(id=0).update(article_id=row_id)
     else:
-        display_url = (
-            f"https://img-9gag-fun.9cache.com/photo/{ngag_row.article_id}_460s.jpg"
-        )
-        display_url = (
-            f"https://img-9gag-fun.9cache.com/photo/{ngag_row.article_id}_700b.jpg"
-        )
+        display_url = f"https://img-9gag-fun.9cache.com/photo/{ngag_row.article_id}_460s.jpg"
+        display_url = f"https://img-9gag-fun.9cache.com/photo/{ngag_row.article_id}_700b.jpg"
         bubble_container = []
         container = BubbleContainer(
             size="giga",
@@ -1197,9 +1137,7 @@ def weather(reply_token, message_text):
                     city_code = city_encoding[item[:3]]
                     city = item[:3]
                     print(city_start, city_counter)
-                    location = cityLocations[
-                        city_start + random.randint(0, city_counter - 1)
-                    ][3:]
+                    location = cityLocations[city_start + random.randint(0, city_counter - 1)][3:]
                     print(item, city, location, city_code)
                 else:
                     print(item)
@@ -1212,9 +1150,9 @@ def weather(reply_token, message_text):
     # print(w_page)
     r = json.loads(requests.get(w_page).text)
     rain_1_start = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0][
-            "startTime"
-        ][11:13]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["startTime"][
+            11:13
+        ]
     )
     if int(rain_1_start) > 11:
         rain_1_daytime = "晚上"
@@ -1232,88 +1170,88 @@ def weather(reply_token, message_text):
         rain_3_daytime = "晚上"
         rain_4_daytime = "早上"
     rain_1_day = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0][
-            "startTime"
-        ][5:10]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["startTime"][
+            5:10
+        ]
     )
     rain_1_day = f"{rain_1_day[0:2]}/{rain_1_day[3:]}"
     rain_2_day = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][1][
-            "startTime"
-        ][5:10]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][1]["startTime"][
+            5:10
+        ]
     )
     rain_2_day = f"{rain_2_day[0:2]}/{rain_2_day[3:]}"
     rain_3_day = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][2][
-            "startTime"
-        ][5:10]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][2]["startTime"][
+            5:10
+        ]
     )
     rain_3_day = f"{rain_3_day[0:2]}/{rain_3_day[3:]}"
     rain_4_day = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][3][
-            "startTime"
-        ][5:10]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][3]["startTime"][
+            5:10
+        ]
     )
     rain_4_day = f"{rain_4_day[0:2]}/{rain_4_day[3:]}"
     rain_1_po = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["elementValue"][
+            0
+        ]["value"]
     )
     rain_2_po = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][1][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][1]["elementValue"][
+            0
+        ]["value"]
     )
     rain_3_po = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][2][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][2]["elementValue"][
+            0
+        ]["value"]
     )
     rain_4_po = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][3][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][3]["elementValue"][
+            0
+        ]["value"]
     )
     temp_1 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][0][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][0]["elementValue"][
+            0
+        ]["value"]
     )
     temp_2 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][1][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][1]["elementValue"][
+            0
+        ]["value"]
     )
     temp_3 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][2][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][2]["elementValue"][
+            0
+        ]["value"]
     )
     temp_4 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][3][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][3]["elementValue"][
+            0
+        ]["value"]
     )
     wind_1 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][0][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][0]["elementValue"][
+            0
+        ]["value"]
     )
     wind_2 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][1][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][1]["elementValue"][
+            0
+        ]["value"]
     )
     wind_3 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][2][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][2]["elementValue"][
+            0
+        ]["value"]
     )
     wind_4 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][3][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][3]["elementValue"][
+            0
+        ]["value"]
     )
     wind_1_d = str(
         r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][0][
@@ -1336,24 +1274,24 @@ def weather(reply_token, message_text):
         ][0]["value"]
     )
     wx_1 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][0][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][0]["elementValue"][
+            0
+        ]["value"]
     )
     wx_2 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][1][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][1]["elementValue"][
+            0
+        ]["value"]
     )
     wx_3 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][2][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][2]["elementValue"][
+            0
+        ]["value"]
     )
     wx_4 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][3][
-            "elementValue"
-        ][0]["value"]
+        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][3]["elementValue"][
+            0
+        ]["value"]
     )
     if len(wx_1) < 6:
         wx_1_1 = wx_1[0:3]
@@ -1445,7 +1383,7 @@ def weather(reply_token, message_text):
                     layout="baseline",
                     margin="sm",
                     contents=[
-                        TextComponent(text=f"降雨機率", size="sm"),
+                        TextComponent(text="降雨機率", size="sm"),
                         TextComponent(text=f"{rain_1_po}%", size="sm"),
                         TextComponent(text=f"{rain_2_po}%", size="sm"),
                         TextComponent(text=f"{rain_3_po}%", size="sm"),
@@ -1457,7 +1395,7 @@ def weather(reply_token, message_text):
                     layout="baseline",
                     margin="sm",
                     contents=[
-                        TextComponent(text=f"氣溫", size="sm"),
+                        TextComponent(text="氣溫", size="sm"),
                         TextComponent(text=f"{temp_1}℃", size="sm"),
                         TextComponent(text=f"{temp_2}℃", size="sm"),
                         TextComponent(text=f"{temp_3}℃", size="sm"),
@@ -1469,7 +1407,7 @@ def weather(reply_token, message_text):
                     layout="baseline",
                     margin="sm",
                     contents=[
-                        TextComponent(text=f"風力", size="sm"),
+                        TextComponent(text="風力", size="sm"),
                         TextComponent(text=f"{wind_1}", size="sm"),
                         TextComponent(text=f"{wind_2}", size="sm"),
                         TextComponent(text=f"{wind_3}", size="sm"),
@@ -1481,7 +1419,7 @@ def weather(reply_token, message_text):
                     layout="baseline",
                     margin="sm",
                     contents=[
-                        TextComponent(text=f"風向", size="sm"),
+                        TextComponent(text="風向", size="sm"),
                         TextComponent(text=f"{wind_1_d}", size="sm"),
                         TextComponent(text=f"{wind_2_d}", size="sm"),
                         TextComponent(text=f"{wind_3_d}", size="sm"),
@@ -1493,7 +1431,7 @@ def weather(reply_token, message_text):
                     layout="baseline",
                     margin="sm",
                     contents=[
-                        TextComponent(text=f" ", size="sm"),
+                        TextComponent(text=" ", size="sm"),
                         TextComponent(text=f"{wx_1_1} ", size="sm"),
                         TextComponent(text=f"{wx_2_1} ", size="sm"),
                         TextComponent(text=f"{wx_3_1} ", size="sm"),
@@ -1504,7 +1442,7 @@ def weather(reply_token, message_text):
                     layout="baseline",
                     margin="sm",
                     contents=[
-                        TextComponent(text=f"概況", size="sm"),
+                        TextComponent(text="概況", size="sm"),
                         TextComponent(text=f"{wx_1_2} ", size="sm"),
                         TextComponent(text=f"{wx_2_2} ", size="sm"),
                         TextComponent(text=f"{wx_3_2} ", size="sm"),
@@ -1515,7 +1453,7 @@ def weather(reply_token, message_text):
                     layout="baseline",
                     margin="sm",
                     contents=[
-                        TextComponent(text=f" ", size="sm"),
+                        TextComponent(text=" ", size="sm"),
                         TextComponent(text=f"{wx_1_3} ", size="sm"),
                         TextComponent(text=f"{wx_2_3} ", size="sm"),
                         TextComponent(text=f"{wx_3_3} ", size="sm"),
@@ -1526,7 +1464,7 @@ def weather(reply_token, message_text):
                     layout="baseline",
                     margin="sm",
                     contents=[
-                        TextComponent(text=f" ", size="sm"),
+                        TextComponent(text=" ", size="sm"),
                         TextComponent(text=f"{wx_1_4} ", size="sm"),
                         TextComponent(text=f"{wx_2_4} ", size="sm"),
                         TextComponent(text=f"{wx_3_4} ", size="sm"),
@@ -1539,23 +1477,19 @@ def weather(reply_token, message_text):
     bubble_container.append(container)
     line_bot_api.reply_message(
         reply_token,
-        FlexSendMessage(
-            alt_text="Weather", contents=CarouselContainer(contents=bubble_container)
-        ),
+        FlexSendMessage(alt_text="Weather", contents=CarouselContainer(contents=bubble_container)),
     )
 
 
 def wish(reply_token, user_id, user_name, message_text):
-    models.pray_table.objects.create(
-        user_id=user_id, user_name=user_name, pray_text=message_text
-    )
+    models.pray_table.objects.create(user_id=user_id, user_name=user_name, pray_text=message_text)
     line_bot_api.reply_message(reply_token, TextSendMessage(text="願望收到囉 敬請期待"))
 
 
 def hometown(reply_token, chat_room, message_text):
     try:
         point_num_request = int(message_text[9:])
-    except:
+    except Exception:
         point_num_request = "error"
     if message_text[8:] == "":
         hometown_day_info_list = models.hometown_day_info_table.objects.get(id=0)
@@ -1570,9 +1504,7 @@ def hometown(reply_token, chat_room, message_text):
     ):
         shift_request = message_text[9:]
         hometown_info_list = models.hometown_info_table.objects.all().order_by("id")
-        hometown_history_list = models.hometown_history_table.objects.all().order_by(
-            "id"
-        )
+        hometown_history_list = models.hometown_history_table.objects.all().order_by("id")
         bubble_container = []
         for item in hometown_info_list:
             image = item.url
@@ -1629,18 +1561,14 @@ def hometown(reply_token, chat_room, message_text):
                                 layout="baseline",
                                 margin="md",
                                 contents=[
-                                    TextComponent(
-                                        text=f"{introduction}", size="sm", wrap=True
-                                    ),
+                                    TextComponent(text=f"{introduction}", size="sm", wrap=True),
                                 ],
                             ),
                             BoxComponent(
                                 layout="baseline",
                                 margin="md",
                                 contents=[
-                                    TextComponent(
-                                        text=f"{history_exp}", size="sm", wrap=True
-                                    ),
+                                    TextComponent(text=f"{history_exp}", size="sm", wrap=True),
                                 ],
                             ),
                         ],
@@ -1751,9 +1679,7 @@ def hometown(reply_token, chat_room, message_text):
                                 layout="baseline",
                                 margin="md",
                                 contents=[
-                                    TextComponent(
-                                        text=f"{history_exp}", size="sm", wrap=True
-                                    ),
+                                    TextComponent(text=f"{history_exp}", size="sm", wrap=True),
                                 ],
                             ),
                         ],
@@ -1770,9 +1696,7 @@ def hometown(reply_token, chat_room, message_text):
                 )
             else:
                 reply_text = "Number not exist !"
-                line_bot_api.reply_message(
-                    reply_token, TextSendMessage(text=reply_text)
-                )
+                line_bot_api.reply_message(reply_token, TextSendMessage(text=reply_text))
         except:
             pass
     else:
@@ -1780,9 +1704,7 @@ def hometown(reply_token, chat_room, message_text):
 
 
 def IU_fans_info(reply_token):
-    url = (
-        "https://drive.google.com/file/d/0B7BRqa5AOBuHSlR1YWZiMVFONXM/view?usp=sharing"
-    )
+    url = "https://drive.google.com/file/d/0B7BRqa5AOBuHSlR1YWZiMVFONXM/view?usp=sharing"
     line_bot_api.reply_message(reply_token, TextSendMessage(text=url))
 
 
@@ -1823,7 +1745,9 @@ def reply_weather(reply_token, message_text):
         mins_now = f"{mins_now[:1]}0"
         today = date_time.strftime("%Y-%m-%d")
         today = f"{today}-{hour_now}-{mins_now}"
-        url = f"https://www.cwa.gov.tw/Data/satellite/TWI_VIS_TRGB_1375/TWI_VIS_TRGB_1375-{today}.jpg"
+        url = (
+            f"https://www.cwa.gov.tw/Data/satellite/TWI_VIS_TRGB_1375/TWI_VIS_TRGB_1375-{today}.jpg"
+        )
         line_bot_api.reply_message(
             reply_token,
             ImageSendMessage(original_content_url=url, preview_image_url=url),
@@ -1882,9 +1806,14 @@ def reply_password_info(reply_token, search_keyword, user_id, chat_room):
         notion = Client(auth=notion_token)
         results = notion.databases.query(
             database_id,
-            sorts=[{"property":"service","direction":"ascending"}],
-            filter={"or":[{"property":"service","rich_text":{"contains":search_keyword}},{"property":"tag","multi_select":{"contains":search_keyword}}]},
-            )
+            sorts=[{"property": "service", "direction": "ascending"}],
+            filter={
+                "or": [
+                    {"property": "service", "rich_text": {"contains": search_keyword}},
+                    {"property": "tag", "multi_select": {"contains": search_keyword}},
+                ]
+            },
+        )
         reply_text = "Password Book\n\n"
         for result in results["results"]:
             service = result["properties"]["service"]["title"][0]["plain_text"]
@@ -1923,17 +1852,11 @@ def reply_line_buy(reply_token, message_text):
         line_buy_list = models.line_buy_table.objects.all().order_by("-point")
         top_list = line_buy_list[0:10]
         for item in top_list:
-            reply_text = (
-                f"{reply_text}品牌: {item.name}\n回饋: {item.point}%\n網址: {item.url}\n\n"
-            )
+            reply_text = f"{reply_text}品牌: {item.name}\n回饋: {item.point}%\n網址: {item.url}\n\n"
     else:
-        search_list = models.line_buy_table.objects.filter(
-            name__contains=f"{message_text}"
-        )
+        search_list = models.line_buy_table.objects.filter(name__contains=f"{message_text}")
         for item in search_list:
-            reply_text = (
-                f"{reply_text}品牌: {item.name}\n回饋: {item.point}%\n網址: {item.url}\n\n"
-            )
+            reply_text = f"{reply_text}品牌: {item.name}\n回饋: {item.point}%\n網址: {item.url}\n\n"
     line_bot_api.reply_message(reply_token, TextSendMessage(text=reply_text))
     # line_bot_api.reply_message(reply_token,ImageSendMessage(original_content_url= url_out, preview_image_url=url_out))
 
@@ -2052,18 +1975,21 @@ def reply_lunch_notification(reply_token, message_text):
     # form.submit()
     # main reply function
 
+
 def reply_gpt_ask(reply_token, message_text):
     log.info(f"function: {sys._getframe().f_code.co_name} start")
     log.info(message_text)
     model = "gpt-4"
-    message=[
+    message = [
         {"role": "user", "content": f"{message_text}"},
     ]
     ask_token = num_tokens_from_messages(message, model)
     log.info(f"num_token = {ask_token}")
     if ask_token <= 2048:
-        client = OpenAI(api_key=gpt_key,)
-        completion = client.chat.completions.create(model=model,messages=message,max_tokens=50)
+        client = OpenAI(
+            api_key=gpt_key,
+        )
+        completion = client.chat.completions.create(model=model, messages=message, max_tokens=50)
         reply_message = completion.choices[0].message.content
         log.info(completion.choices[0].message)
         log.info(completion.choices[0].message.content)
@@ -2087,14 +2013,16 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613"):
         "gpt-4-32k-0314",
         "gpt-4-0613",
         "gpt-4-32k-0613",
-        }:
+    }:
         tokens_per_message = 3
         tokens_per_name = 1
     elif model == "gpt-3.5-turbo-0301":
         tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
         tokens_per_name = -1  # if there's a name, the role is omitted
     elif "gpt-3.5-turbo" in model:
-        print("Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613.")
+        print(
+            "Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613."
+        )
         return num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613")
     elif "gpt-4" in model:
         print("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
@@ -2112,6 +2040,7 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613"):
                 num_tokens += tokens_per_name
     num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>
     return num_tokens
+
 
 def line_bot_receive(request):
     log.info(f"function: {sys._getframe().f_code.co_name}")
@@ -2168,9 +2097,7 @@ def line_bot_receive(request):
         # log.info(IU_test)
         # Call back start
         # Help information
-        if (
-            message_text.upper() == "HELP" or message_text.upper() == "-H"
-        ):  # Help for IU
+        if message_text.upper() == "HELP" or message_text.upper() == "-H":  # Help for IU
             reply_help(reply_token)
         # keyword list
         elif message_text.upper() == "-H KEYWORD":
@@ -2189,9 +2116,7 @@ def line_bot_receive(request):
             message_text = message_text.upper().replace("瑟瑟", "色色")
             if message_text == "KI的最愛":
                 reply_text = keyword_dict["Ki的最愛"]
-                line_bot_api.reply_message(
-                    reply_token, TextSendMessage(text=reply_text)
-                )
+                line_bot_api.reply_message(reply_token, TextSendMessage(text=reply_text))
             elif message_text[0:2] == "警察":
                 if message_text[3:].upper() == "ANN" or message_text[3:].upper() == "安":
                     message_text = "警察_ann"
@@ -2279,13 +2204,9 @@ def line_bot_receive(request):
             #     message_text ="9FUN"
             # if message_text == "9HOT" and user_id not in IU_fans_club:
             #     message_text ="9FUN"
-            if message_text == "99" and (
-                user_id in IU_fans_club or user_id in spirit_chamber
-            ):
+            if message_text == "99" and (user_id in IU_fans_club or user_id in spirit_chamber):
                 message_text = "9GIRL"
-            if message_text == "98" and (
-                user_id in IU_fans_club or user_id in spirit_chamber
-            ):
+            if message_text == "98" and (user_id in IU_fans_club or user_id in spirit_chamber):
                 message_text = "9HOT"
             reply_9gag(reply_token, message_text)
         # call ccc
@@ -2333,8 +2254,7 @@ def line_bot_receive(request):
         # hometown list
         elif message_text[0:8].upper() == "HOMETOWN":
             if user_id in IU_fans_club and (
-                chat_room in permission_dict_chat_room_hometown
-                or chat_room in legend_family
+                chat_room in permission_dict_chat_room_hometown or chat_room in legend_family
             ):
                 hometown(reply_token, chat_room, message_text)
             else:
@@ -2358,7 +2278,7 @@ def line_bot_receive(request):
                     add_password_info(reply_token, message_text)
                 else:
                     message_text = message_text[3:].upper()
-                    reply_password_info(reply_token, message_text,user_id,chat_room)
+                    reply_password_info(reply_token, message_text, user_id, chat_room)
         # protect mode
         elif message_text == ".." or message_text.upper() == "...":
             reply_text = ""
@@ -2377,7 +2297,7 @@ def line_bot_receive(request):
         # ask gpt
         elif message_text[0:4].upper() == "GPT ":
             message_text = message_text[4:]
-            reply_gpt_ask(reply_token, message_text) 
+            reply_gpt_ask(reply_token, message_text)
         # all else pass
         else:
             pass
