@@ -224,9 +224,7 @@ def reply_dog_card(reply_token):
 
 def reply_sticker(reply_token, message_text):
     sitcker_id = sticker_dict[message_text]
-    line_bot_api.reply_message(
-        reply_token, StickerSendMessage(package_id=11537, sticker_id=sitcker_id)
-    )
+    line_bot_api.reply_message(reply_token, StickerSendMessage(package_id=11537, sticker_id=sitcker_id))
 
 
 def reply_porn(reply_token, message_text):
@@ -238,12 +236,8 @@ def reply_porn(reply_token, message_text):
     input_url = "https://www.xvideos.com" + video[video.find("href") + 6 : video.find('">', 20)]
     r = requests.get(input_url, headers=headers_postman, timeout=10)
     video = r.text
-    output_url = video[
-        video.find("setVideoUrlHigh") + 17 : video.find("')", video.find("setVideoUrlHigh"))
-    ]
-    picture_url = video[
-        video.find("setThumbUrl169") + 16 : video.find("')", video.find("setThumbUrl169"))
-    ]
+    output_url = video[video.find("setVideoUrlHigh") + 17 : video.find("')", video.find("setVideoUrlHigh"))]
+    picture_url = video[video.find("setThumbUrl169") + 16 : video.find("')", video.find("setThumbUrl169"))]
     line_bot_api.reply_message(
         reply_token,
         VideoSendMessage(original_content_url=output_url, preview_image_url=picture_url),
@@ -254,12 +248,8 @@ def reply_xvideos(reply_token, message_text):
     input_url = message_text
     r = requests.get(input_url, headers=headers_postman, timeout=10)
     video = r.text
-    output_url = video[
-        video.find("setVideoUrlHigh") + 17 : video.find("')", video.find("setVideoUrlHigh"))
-    ]
-    picture_url = video[
-        video.find("setThumbUrl169") + 16 : video.find("')", video.find("setThumbUrl169"))
-    ]
+    output_url = video[video.find("setVideoUrlHigh") + 17 : video.find("')", video.find("setVideoUrlHigh"))]
+    picture_url = video[video.find("setThumbUrl169") + 16 : video.find("')", video.find("setThumbUrl169"))]
     line_bot_api.reply_message(
         reply_token,
         VideoSendMessage(original_content_url=output_url, preview_image_url=picture_url),
@@ -269,9 +259,7 @@ def reply_xvideos(reply_token, message_text):
 def reply_douyin(reply_token, message_text):
     # url preprocessing
     if message_text.find("v.douyin.com") != -1:
-        input_url = message_text[
-            message_text.find("http") : message_text.find("/", message_text.find("http") + 21) + 1
-        ]
+        input_url = message_text[message_text.find("http") : message_text.find("/", message_text.find("http") + 21) + 1]
         redirect_url = requests.get(input_url, headers=headers_hashtag, timeout=10).url
         item_ids = redirect_url[redirect_url.find("video") + 6 : redirect_url.find("?")]
     else:
@@ -326,9 +314,7 @@ def reply_IG(reply_token, chat_room, message_text):
         log.info("IG post")
         if message_text[0:31] == "https://www.instagram.com/reel/":
             message_text = message_text.replace("/reel/", "/p/")
-        shortcode = message_text[
-            message_text.find("/p/") + 3 : message_text.find("/", message_text.find("/p/") + 3)
-        ]
+        shortcode = message_text[message_text.find("/p/") + 3 : message_text.find("/", message_text.find("/p/") + 3)]
         sub_page = f"https://www.instagram.com/p/{shortcode}/"
         log.info(shortcode)
 
@@ -496,9 +482,7 @@ def reply_IG(reply_token, chat_room, message_text):
                 video_url = video_list[i * 2 + 1]
                 line_bot_api.push_message(
                     chat_room,
-                    VideoSendMessage(
-                        original_content_url=video_url, preview_image_url=thumbnail_url
-                    ),
+                    VideoSendMessage(original_content_url=video_url, preview_image_url=thumbnail_url),
                 )
         else:
             log.info("IG single video")
@@ -721,11 +705,7 @@ def reply_youtube(reply_token, message_text):
 def reply_ptt(reply_token, message_text):
     if message_text.find("www.ptt.cc") != -1:
         message_text = message_text[message_text.find("https") : message_text.find(".html") + 5]
-        message_text = (
-            message_text.replace(".html", "")
-            .replace("/", ".")
-            .replace("https:..www.ptt.cc.bbs.", "https://moptt.tw/p/")
-        )
+        message_text = message_text.replace(".html", "").replace("/", ".").replace("https:..www.ptt.cc.bbs.", "https://moptt.tw/p/")
     input_url = message_text
     input_url = input_url.replace("/p/", "/ptt/")
     bubble_container = []
@@ -767,9 +747,7 @@ def reply_twitter(reply_token, message_text):
     url = "https://www.expertsphp.com/instagram-reels-downloader.php"
     data_1 = {"url": message_text}
     r = requests.post(url, data=data_1)
-    url_out = r.text[
-        r.text.find('src="http://pbs') + 5 : r.text.find(".jpg", r.text.find('src="http://pbs')) + 4
-    ]
+    url_out = r.text[r.text.find('src="http://pbs') + 5 : r.text.find(".jpg", r.text.find('src="http://pbs')) + 4]
     if url_out.find("https") == -1:
         url_out = url_out.replace("http", "https")
     line_bot_api.reply_message(
@@ -969,9 +947,7 @@ def reply_9gag(reply_token, message_text):
                                 position="absolute",
                             )
                         ],
-                        background=LinearGradientBackground(
-                            angle="0deg", start_color="#00000099", end_color="#00000000"
-                        ),
+                        background=LinearGradientBackground(angle="0deg", start_color="#00000099", end_color="#00000000"),
                         position="absolute",
                         width="100%",
                         height="10%",
@@ -1084,21 +1060,9 @@ def dict_translator(reply_token, message_text):
     output_str = f"Urban dictionary\n{message_text}\n\n"
     for num in range(len(json_dict["list"])):
         if num < 3:
-            temp_str = (
-                json_dict["list"][num]["definition"]
-                .replace("[", "")
-                .replace("]", "")
-                .replace("-", ": ")
-                .replace("\n", "")
-            )
+            temp_str = json_dict["list"][num]["definition"].replace("[", "").replace("]", "").replace("-", ": ").replace("\n", "")
             output_str = f"{output_str}Def {num+1}: {temp_str}\n"
-            temp_str = (
-                json_dict["list"][num]["example"]
-                .replace("[", "")
-                .replace("]", "")
-                .replace("-", ": ")
-                .replace("\n", "")
-            )
+            temp_str = json_dict["list"][num]["example"].replace("[", "").replace("]", "").replace("-", ": ").replace("\n", "")
             output_str = f"{output_str}Ex {num+1}: {temp_str}\n\n"
     line_bot_api.reply_message(reply_token, TextSendMessage(text=output_str))
 
@@ -1149,11 +1113,7 @@ def weather(reply_token, message_text):
     w_page = f"https://opendata.cwb.gov.tw/api/v1/rest/datastore/{city_code}?Authorization={Authorization}&locationName={location}"
     # print(w_page)
     r = json.loads(requests.get(w_page).text)
-    rain_1_start = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["startTime"][
-            11:13
-        ]
-    )
+    rain_1_start = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["startTime"][11:13])
     if int(rain_1_start) > 11:
         rain_1_daytime = "晚上"
         rain_2_daytime = "白天"
@@ -1169,130 +1129,34 @@ def weather(reply_token, message_text):
         rain_2_daytime = "早上"
         rain_3_daytime = "晚上"
         rain_4_daytime = "早上"
-    rain_1_day = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["startTime"][
-            5:10
-        ]
-    )
+    rain_1_day = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["startTime"][5:10])
     rain_1_day = f"{rain_1_day[0:2]}/{rain_1_day[3:]}"
-    rain_2_day = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][1]["startTime"][
-            5:10
-        ]
-    )
+    rain_2_day = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][1]["startTime"][5:10])
     rain_2_day = f"{rain_2_day[0:2]}/{rain_2_day[3:]}"
-    rain_3_day = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][2]["startTime"][
-            5:10
-        ]
-    )
+    rain_3_day = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][2]["startTime"][5:10])
     rain_3_day = f"{rain_3_day[0:2]}/{rain_3_day[3:]}"
-    rain_4_day = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][3]["startTime"][
-            5:10
-        ]
-    )
+    rain_4_day = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][3]["startTime"][5:10])
     rain_4_day = f"{rain_4_day[0:2]}/{rain_4_day[3:]}"
-    rain_1_po = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["elementValue"][
-            0
-        ]["value"]
-    )
-    rain_2_po = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][1]["elementValue"][
-            0
-        ]["value"]
-    )
-    rain_3_po = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][2]["elementValue"][
-            0
-        ]["value"]
-    )
-    rain_4_po = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][3]["elementValue"][
-            0
-        ]["value"]
-    )
-    temp_1 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][0]["elementValue"][
-            0
-        ]["value"]
-    )
-    temp_2 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][1]["elementValue"][
-            0
-        ]["value"]
-    )
-    temp_3 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][2]["elementValue"][
-            0
-        ]["value"]
-    )
-    temp_4 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][3]["elementValue"][
-            0
-        ]["value"]
-    )
-    wind_1 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][0]["elementValue"][
-            0
-        ]["value"]
-    )
-    wind_2 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][1]["elementValue"][
-            0
-        ]["value"]
-    )
-    wind_3 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][2]["elementValue"][
-            0
-        ]["value"]
-    )
-    wind_4 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][3]["elementValue"][
-            0
-        ]["value"]
-    )
-    wind_1_d = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][0][
-            "elementValue"
-        ][0]["value"]
-    )
-    wind_2_d = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][1][
-            "elementValue"
-        ][0]["value"]
-    )
-    wind_3_d = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][2][
-            "elementValue"
-        ][0]["value"]
-    )
-    wind_4_d = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][3][
-            "elementValue"
-        ][0]["value"]
-    )
-    wx_1 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][0]["elementValue"][
-            0
-        ]["value"]
-    )
-    wx_2 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][1]["elementValue"][
-            0
-        ]["value"]
-    )
-    wx_3 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][2]["elementValue"][
-            0
-        ]["value"]
-    )
-    wx_4 = str(
-        r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][3]["elementValue"][
-            0
-        ]["value"]
-    )
+    rain_1_po = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["elementValue"][0]["value"])
+    rain_2_po = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][1]["elementValue"][0]["value"])
+    rain_3_po = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][2]["elementValue"][0]["value"])
+    rain_4_po = str(r["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][3]["elementValue"][0]["value"])
+    temp_1 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][0]["elementValue"][0]["value"])
+    temp_2 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][1]["elementValue"][0]["value"])
+    temp_3 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][2]["elementValue"][0]["value"])
+    temp_4 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"][3]["elementValue"][0]["value"])
+    wind_1 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][0]["elementValue"][0]["value"])
+    wind_2 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][1]["elementValue"][0]["value"])
+    wind_3 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][2]["elementValue"][0]["value"])
+    wind_4 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][4]["time"][3]["elementValue"][0]["value"])
+    wind_1_d = str(r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][0]["elementValue"][0]["value"])
+    wind_2_d = str(r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][1]["elementValue"][0]["value"])
+    wind_3_d = str(r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][2]["elementValue"][0]["value"])
+    wind_4_d = str(r["records"]["locations"][0]["location"][0]["weatherElement"][13]["time"][3]["elementValue"][0]["value"])
+    wx_1 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][0]["elementValue"][0]["value"])
+    wx_2 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][1]["elementValue"][0]["value"])
+    wx_3 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][2]["elementValue"][0]["value"])
+    wx_4 = str(r["records"]["locations"][0]["location"][0]["weatherElement"][6]["time"][3]["elementValue"][0]["value"])
     if len(wx_1) < 6:
         wx_1_1 = wx_1[0:3]
         wx_1_2 = wx_1[3:]
@@ -1493,15 +1357,8 @@ def hometown(reply_token, chat_room, message_text):
         point_num_request = "error"
     if message_text[8:] == "":
         hometown_day_info_list = models.hometown_day_info_table.objects.get(id=0)
-        line_bot_api.reply_message(
-            reply_token, TextSendMessage(text=hometown_day_info_list.day_info)
-        )
-    elif (
-        message_text[9:] == "早班"
-        or message_text[9:] == "中班"
-        or message_text[9:] == "晚班"
-        or message_text[9:] == "新進"
-    ):
+        line_bot_api.reply_message(reply_token, TextSendMessage(text=hometown_day_info_list.day_info))
+    elif message_text[9:] == "早班" or message_text[9:] == "中班" or message_text[9:] == "晚班" or message_text[9:] == "新進":
         shift_request = message_text[9:]
         hometown_info_list = models.hometown_info_table.objects.all().order_by("id")
         hometown_history_list = models.hometown_history_table.objects.all().order_by("id")
@@ -1510,7 +1367,7 @@ def hometown(reply_token, chat_room, message_text):
             image = item.url
             shift = item.shift
             point_num = item.id_num
-            real_working_time = item.time
+            # real_working_time = item.time
             body_language = item.body
             introduction = item.info
             history_exp = " "
@@ -1519,15 +1376,15 @@ def hometown(reply_token, chat_room, message_text):
                 history = item.history
                 if str(point_num) == str(id_num):
                     history_exp = f"exp: {history}"
-            introduction_1 = " "
-            introduction_2 = " "
-            introduction_3 = " "
-            if len(introduction[:18]) > 0:
-                introduction_1 = introduction[:18]
-            if len(introduction[18:36]) > 0:
-                introduction_2 = introduction[18:36]
-            if len(introduction[36:]) > 0:
-                introduction_3 = introduction[36:]
+            # introduction_1 = " "
+            # introduction_2 = " "
+            # introduction_3 = " "
+            # if len(introduction[:18]) > 0:
+            #     introduction_1 = introduction[:18]
+            # if len(introduction[18:36]) > 0:
+            #     introduction_2 = introduction[18:36]
+            # if len(introduction[36:]) > 0:
+            #     introduction_3 = introduction[36:]
             if shift in shift_request:
                 container = BubbleContainer(
                     size="giga",
@@ -1610,36 +1467,32 @@ def hometown(reply_token, chat_room, message_text):
         try:
             point_num_request = int(message_text[9:])
             try:
-                hometown_info_list = models.hometown_info_table.objects.get(
-                    id_num=point_num_request
-                )
-            except:
+                hometown_info_list = models.hometown_info_table.objects.get(id_num=point_num_request)
+            except Exception:
                 hometown_info_list = "None"
             try:
-                hometown_history_list = models.hometown_history_table.objects.get(
-                    id_num=point_num_request
-                )
+                hometown_history_list = models.hometown_history_table.objects.get(id_num=point_num_request)
                 hometown_history = hometown_history_list.history
-            except:
+            except Exception:
                 hometown_history = ""
             if hometown_info_list != "None":
                 bubble_container = []
                 image = hometown_info_list.url
                 shift = hometown_info_list.shift
                 point_num = hometown_info_list.id_num
-                real_working_time = hometown_info_list.time
+                # real_working_time = hometown_info_list.time
                 body_language = hometown_info_list.body
                 introduction = hometown_info_list.info
                 history_exp = f"exp: {hometown_history}"
-                introduction_1 = " "
-                introduction_2 = " "
-                introduction_3 = " "
-                if len(introduction[:18]) > 0:
-                    introduction_1 = introduction[:18]
-                if len(introduction[18:36]) > 0:
-                    introduction_2 = introduction[18:36]
-                if len(introduction[36:]) > 0:
-                    introduction_3 = introduction[36:]
+                # introduction_1 = " "
+                # introduction_2 = " "
+                # introduction_3 = " "
+                # if len(introduction[:18]) > 0:
+                #     introduction_1 = introduction[:18]
+                # if len(introduction[18:36]) > 0:
+                #     introduction_2 = introduction[18:36]
+                # if len(introduction[36:]) > 0:
+                #     introduction_3 = introduction[36:]
                 container = BubbleContainer(
                     size="giga",
                     hero=ImageComponent(
@@ -1697,7 +1550,7 @@ def hometown(reply_token, chat_room, message_text):
             else:
                 reply_text = "Number not exist !"
                 line_bot_api.reply_message(reply_token, TextSendMessage(text=reply_text))
-        except:
+        except Exception:
             pass
     else:
         pass
@@ -1745,9 +1598,7 @@ def reply_weather(reply_token, message_text):
         mins_now = f"{mins_now[:1]}0"
         today = date_time.strftime("%Y-%m-%d")
         today = f"{today}-{hour_now}-{mins_now}"
-        url = (
-            f"https://www.cwa.gov.tw/Data/satellite/TWI_VIS_TRGB_1375/TWI_VIS_TRGB_1375-{today}.jpg"
-        )
+        url = f"https://www.cwa.gov.tw/Data/satellite/TWI_VIS_TRGB_1375/TWI_VIS_TRGB_1375-{today}.jpg"
         line_bot_api.reply_message(
             reply_token,
             ImageSendMessage(original_content_url=url, preview_image_url=url),
@@ -1780,7 +1631,7 @@ def reply_weather(reply_token, message_text):
         timestamp = datetime.datetime.now().timestamp() - 60 * 30
         date_time = datetime.datetime.fromtimestamp(timestamp)
         hour_now = date_time.strftime("%H")
-        mins_now = f"00"
+        mins_now = "00"
         today = date_time.strftime("%Y-%m-%d")
         today = f"{today}_{hour_now}{mins_now}"
         url = f"https://www.cwa.gov.tw/Data/temperature/{today}.GTP8.jpg"
@@ -1831,23 +1682,21 @@ def add_password_info(reply_token, message_text):
     password_book_list = models.password_book.objects.all().order_by("id")
     id_num = password_book_list[password_book_list.count() - 1].id + 1
     service, account, password, link = message_text.split(" ")
-    data_dict = {
-        "id": id_num,
-        "service": f"{service}",
-        "account": f"{account}",
-        "password": f"{password}",
-        "link": f"{link}",
-    }
-    pw_saver = models.password_book(
-        id=id_num, service=service, account=account, password=password, link=link
-    )
+    # data_dict = {
+    #     "id": id_num,
+    #     "service": f"{service}",
+    #     "account": f"{account}",
+    #     "password": f"{password}",
+    #     "link": f"{link}",
+    # }
+    pw_saver = models.password_book(id=id_num, service=service, account=account, password=password, link=link)
     pw_saver.save()
-    reply_text = f"pw add ok"
+    reply_text = "pw add ok"
     line_bot_api.reply_message(reply_token, TextSendMessage(text=reply_text))
 
 
 def reply_line_buy(reply_token, message_text):
-    reply_text = f"Line 購物\n\n"
+    reply_text = "Line 購物\n\n"
     if message_text == "TOP":
         line_buy_list = models.line_buy_table.objects.all().order_by("-point")
         top_list = line_buy_list[0:10]
@@ -1865,8 +1714,8 @@ def reply_test(reply_token, message_text, user_id, chat_room):
     if user_id == admin_id and chat_room in IU_test:
         if len(message_text) == 4:
             # output_url = f"{project_path}/media/tiktok/test1.mp4"
-            output_url = "https://iufans.club/warehouse/tiktok/1"
-            picture_url = "https://i.imgur.com/4sDRcxn.jpg"
+            # output_url = "https://iufans.club/warehouse/tiktok/1"
+            # picture_url = "https://i.imgur.com/4sDRcxn.jpg"
             # reply_9gag(reply_token, chat_room, message_text)
             # output_url = ""
             # picture_url = ""
@@ -1936,11 +1785,11 @@ def reply_lunch_notification(reply_token, message_text):
         log.info(element.name)
         log.info(element_index)
         if element_index == 0:
-            return f"朱家進"
+            return "朱家進"
         if element_index == 1:
-            return f"26004"
+            return "26004"
         if element_index == 2:
-            return f"鴻海"
+            return "鴻海"
         if element_index == 4:
             return f"{lunch}"
 
@@ -1956,12 +1805,7 @@ def reply_lunch_notification(reply_token, message_text):
         for _ in range(lunch_counter):
             log.info(lunch_list)
             log.info(lunch_search_num)
-            lunch_list.append(
-                lunch_str[
-                    lunch_str.find("◯", lunch_search_num)
-                    + 2 : lunch_str.find("\n", lunch_str.find("◯", lunch_search_num))
-                ]
-            )
+            lunch_list.append(lunch_str[lunch_str.find("◯", lunch_search_num) + 2 : lunch_str.find("\n", lunch_str.find("◯", lunch_search_num))])
             lunch_search_num = lunch_str.find("◯", lunch_search_num) + 1
         lunch = lunch_list[lunch_index]
         log.info(lunch)
@@ -1995,7 +1839,7 @@ def reply_gpt_ask(reply_token, message_text):
         log.info(completion.choices[0].message.content)
         line_bot_api.reply_message(reply_token, TextSendMessage(text=reply_message))
     else:
-        error_message = f"Please contact admin for more information."
+        error_message = "Please contact admin for more information."
         line_bot_api.reply_message(reply_token, TextSendMessage(text=error_message))
 
 
@@ -2020,17 +1864,13 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613"):
         tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
         tokens_per_name = -1  # if there's a name, the role is omitted
     elif "gpt-3.5-turbo" in model:
-        print(
-            "Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613."
-        )
+        print("Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613.")
         return num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613")
     elif "gpt-4" in model:
         print("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
         return num_tokens_from_messages(messages, model="gpt-4-0613")
     else:
-        raise NotImplementedError(
-            f"""num_tokens_from_messages() is not implemented for model {model}. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens."""
-        )
+        raise NotImplementedError(f"""num_tokens_from_messages() is not implemented for model {model}.""")
     num_tokens = 0
     for message in messages:
         num_tokens += tokens_per_message
@@ -2052,7 +1892,7 @@ def line_bot_receive(request):
     user_id = request_dict["events"][0]["source"].get("userId")
     events_timestamp = request_dict["events"][0].get("timestamp")
     message_type = request_dict["events"][0]["message"].get("type")
-    message_id = request_dict["events"][0]["message"].get("id")
+    # message_id = request_dict["events"][0]["message"].get("id")
     message_text = request_dict["events"][0]["message"].get("text", "None")
     if message_text == "None":
         message_text = f"{str(message_type)}_{str(events_timestamp)}"
@@ -2107,12 +1947,7 @@ def line_bot_receive(request):
             message_text = message_text.upper()
             reply_sticker(reply_token, message_text)
         # picture by keyword
-        elif (
-            message_text.upper() in keyword_dict
-            or message_text.upper().replace("瑟瑟", "色色") in dog_dict
-            or message_text[0:2] == "警察"
-            or message_text.upper() == "KI的最愛"
-        ):
+        elif message_text.upper() in keyword_dict or message_text.upper().replace("瑟瑟", "色色") in dog_dict or message_text[0:2] == "警察" or message_text.upper() == "KI的最愛":
             message_text = message_text.upper().replace("瑟瑟", "色色")
             if message_text == "KI的最愛":
                 reply_text = keyword_dict["Ki的最愛"]
@@ -2183,22 +2018,11 @@ def line_bot_receive(request):
         elif message_text == "彭于晏":
             reply_yuyan(reply_token)
         # double word picture
-        elif (
-            message_text.upper() == "MM"
-            or message_text.upper() == "PP"
-            or message_text.upper() == "OO"
-            or message_text.upper() == "CC"
-        ):
+        elif message_text.upper() == "MM" or message_text.upper() == "PP" or message_text.upper() == "OO" or message_text.upper() == "CC":
             message_text = message_text.upper()
             reply_double_word_pic(reply_token, message_text)
         # 9gag
-        elif (
-            message_text.upper() == "9FUN"
-            or message_text.upper() == "9GIRL"
-            or message_text.upper() == "9HOT"
-            or message_text.upper() == "99"
-            or message_text.upper() == "98"
-        ):
+        elif message_text.upper() == "9FUN" or message_text.upper() == "9GIRL" or message_text.upper() == "9HOT" or message_text.upper() == "99" or message_text.upper() == "98":
             message_text = message_text.upper()
             # if message_text == "9GIRL" and user_id not in IU_fans_club:
             #     message_text ="9FUN"
@@ -2216,9 +2040,7 @@ def line_bot_receive(request):
         elif message_text.upper() == "MAN":
             reply_for_man(reply_token)
         # call google translater
-        elif (message_text[0:2] == "字典" and message_text[2] == " ") or (
-            message_text[0:4].lower() == "dict" and message_text[4] == " "
-        ):
+        elif (message_text[0:2] == "字典" and message_text[2] == " ") or (message_text[0:4].lower() == "dict" and message_text[4] == " "):
             if message_text[0:2] == "字典":
                 dict_translator(reply_token, message_text[3:])
             else:
@@ -2227,14 +2049,7 @@ def line_bot_receive(request):
         elif len(message_text) <= 6 and "天氣" in message_text:
             weather(reply_token, message_text)
         # youtube song
-        elif (
-            message_text[:3] == "來一首"
-            or message_text[:3] == "點一首"
-            or message_text[:2] == "點播"
-            or message_text[:2] == "點首"
-            or message_text[:2] == "點歌"
-            or message_text[:2] == "來首"
-        ):
+        elif message_text[:3] == "來一首" or message_text[:3] == "點一首" or message_text[:2] == "點播" or message_text[:2] == "點首" or message_text[:2] == "點歌" or message_text[:2] == "來首":
             if message_text[:3] == "來一首" or message_text[:3] == "點一首":
                 message_text = message_text[3:]
             else:
@@ -2253,9 +2068,7 @@ def line_bot_receive(request):
             wish(reply_token, user_id, user_name, message_text)
         # hometown list
         elif message_text[0:8].upper() == "HOMETOWN":
-            if user_id in IU_fans_club and (
-                chat_room in permission_dict_chat_room_hometown or chat_room in legend_family
-            ):
+            if user_id in IU_fans_club and (chat_room in permission_dict_chat_room_hometown or chat_room in legend_family):
                 hometown(reply_token, chat_room, message_text)
             else:
                 pass
@@ -2303,29 +2116,32 @@ def line_bot_receive(request):
             pass
     # if image message
     elif message_type == "image":
-        message_time = events_timestamp
-        # print(f'{user_name} : image {message_time}')
-        message_content = line_bot_api.get_message_content(message_id)
-        with open(f"{project_path}/media/{events_timestamp}.jpg", "wb") as fd:
-            for chunk in message_content.iter_content():
-                fd.write(chunk)
+        pass
+        # message_time = events_timestamp
+        # # print(f'{user_name} : image {message_time}')
+        # message_content = line_bot_api.get_message_content(message_id)
+        # with open(f"{project_path}/media/{events_timestamp}.jpg", "wb") as fd:
+        #     for chunk in message_content.iter_content():
+        #         fd.write(chunk)
     # if video message
     elif message_type == "video":
-        message_time = events_timestamp
-        # print(f'{user_name} : video {message_time}')
-        message_content = line_bot_api.get_message_content(message_id)
-        with open(f"{project_path}/media/{message_time}.mp4", "wb") as fd:
-            for chunk in message_content.iter_content():
-                fd.write(chunk)
+        pass
+        # message_time = events_timestamp
+        # # print(f'{user_name} : video {message_time}')
+        # message_content = line_bot_api.get_message_content(message_id)
+        # with open(f"{project_path}/media/{message_time}.mp4", "wb") as fd:
+        #     for chunk in message_content.iter_content():
+        #         fd.write(chunk)
     # if audio message
     elif message_type == "audio":
-        message_time = events_timestamp
-        # print(f'{user_name} : audio {message_time}')
-        message_content = line_bot_api.get_message_content(message_id)
-        with open(f"{project_path}/media/{message_time}.m4a", "wb") as fd:
-            for chunk in message_content.iter_content():
-                fd.write(chunk)
+        pass
+        # message_time = events_timestamp
+        # # print(f'{user_name} : audio {message_time}')
+        # message_content = line_bot_api.get_message_content(message_id)
+        # with open(f"{project_path}/media/{message_time}.m4a", "wb") as fd:
+        #     for chunk in message_content.iter_content():
+        #         fd.write(chunk)
     # any other message
     else:
-        print(f"message_type: {message_type}")
+        log.info(f"message_type: {message_type}")
     return HttpResponse(status=200)
