@@ -5,7 +5,7 @@ import datetime
 from time import time
 from pathlib import Path
 from src.py_logging import py_logger, remove_old_log
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse, HttpRequest
 from . import models
 import requests
 from bs4 import BeautifulSoup
@@ -96,6 +96,16 @@ with open(f"{str(py_path)}/config/line_bot_list.json", encoding="utf-8") as f:
 
 with open(f"{str(py_path)}/config/gpt_key.json", encoding="utf-8") as f:
     gpt_key = json.load(f)["gpt_key"]
+
+#
+with open(f"{str(py_path)}/config/IG_secrets.json", encoding="utf-8") as f:
+    list_json = json.load(f)
+    IG_account = list_json["account"]
+    IG_password = list_json["password"]
+
+# ig = instaloader.Instaloader()
+# ig.login(IG_account, IG_password)
+
 
 # get admin id
 admin_id = list(IU_fans_club.keys())[0]
@@ -305,7 +315,7 @@ def reply_tiktok(reply_token, message_text):
 
 
 def reply_IG(reply_token, chat_room, message_text):
-    log.info("IG reply")
+    log.info(f"function: {sys._getframe().f_code.co_name}")
     # url preprocessing
     if message_text[0:22] == "https://instagram.com/":
         message_text = f"https://www.{message_text[8:]}"
@@ -320,8 +330,9 @@ def reply_IG(reply_token, chat_room, message_text):
 
         # init instaloader
         ig = instaloader.Instaloader()
+        # log.info(ig)
         post = instaloader.Post.from_shortcode(ig.context, shortcode)
-
+        # log.info(post)
         # get IG_post_title
         IG_post_title = post.caption
         IG_post_title_lines = IG_post_title.count("\n")
@@ -334,6 +345,7 @@ def reply_IG(reply_token, chat_room, message_text):
         log.info(IG_post_title_lines)
         log.info(IG_post_title_ratio)
         log.info(post)
+
         # find meida_count
         media_num = post.mediacount
         log.info(media_num)
@@ -1882,17 +1894,24 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613"):
     return num_tokens
 
 
+def privacy_policy(request):
+    return HttpResponse(status=200, content="privacy_policy check")
+
+
+def ig_api_webhook(request):
+    string = "https://iufans.club/iu_server/line_bot_receive/ig_api_webhook?hub.mode=subscribe&hub.challenge=1596284&hub.verify_token=message_from_ig_app_1016"
+    return HttpResponse(status=200, content=string)
+
+
 def line_bot_receive(request):
     log.info(f"function: {sys._getframe().f_code.co_name}")
     request_dict = json.loads(request.body.decode("utf-8"))
-    # print_request_detail(request)
     reply_token = request_dict["events"][0].get("replyToken")
     group_id = request_dict["events"][0]["source"].get("groupId", "None")
     room_id = request_dict["events"][0]["source"].get("roomId", "None")
     user_id = request_dict["events"][0]["source"].get("userId")
     events_timestamp = request_dict["events"][0].get("timestamp")
     message_type = request_dict["events"][0]["message"].get("type")
-    # message_id = request_dict["events"][0]["message"].get("id")
     message_text = request_dict["events"][0]["message"].get("text", "None")
     if message_text == "None":
         message_text = f"{str(message_type)}_{str(events_timestamp)}"
@@ -1910,7 +1929,7 @@ def line_bot_receive(request):
         chat_room = room_id
         profile = line_bot_api.get_room_member_profile(room_id, user_id)
         user_name = profile.display_name
-        user_info, created_record = models.user_info_table.objects.get_or_create(
+        models.user_info_table.objects.get_or_create(
             user_id=user_id,
             defaults={
                 "user_name": user_name,
@@ -1929,13 +1948,8 @@ def line_bot_receive(request):
     log.info(f"{user_name} : {message_text}")
     db_update_chat_log(user_id, user_name, chat_room, message_text)
 
-    # if text message
+    # check text message
     if message_type == "text":
-        # log.info(user_id)
-        # log.info(admin_id)
-        # log.info(chat_room)
-        # log.info(IU_test)
-        # Call back start
         # Help information
         if message_text.upper() == "HELP" or message_text.upper() == "-H":  # Help for IU
             reply_help(reply_token)

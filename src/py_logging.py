@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
-# 2023_0717 v7
+# 2024_1015 v10 modify the date format
 import logging
 import time
 import datetime
 from pathlib import Path
+
+# set path and name
+py_path = Path(__file__).parent
+py_name = Path(__file__).stem
+project_path = Path(__file__).parent.parent
+project_name = Path(__file__).parent.stem
+log_path = f"{project_path}/log"
+log_name = f"{project_name}_{py_name}"
+logger_name = f"{project_name}_{py_name}"
+config_path = f"{project_path}/config"
 
 
 def py_logger(
@@ -11,10 +21,11 @@ def py_logger(
     level="DEBUG",
     log_path="here",
     log_name="file_name",
+    logger_name="root",
     file_console="both",
-    logger_name=None,
 ):
-    """Use logger
+    """Use logger,
+    log = py_logger("w","INFO",log_path,log_name,logger_name)
 
     Args:
             write_mode (str, optional): w for write, a for attached. Defaults to "a".
@@ -34,7 +45,7 @@ def py_logger(
     logger.setLevel(level_mode)
     formatter = logging.Formatter(
         "[%(levelname).1s %(asctime)s %(module)s %(lineno)4d] %(message)s",
-        datefmt="%Y_%m%d %H:%M:%S",
+        datefmt="%m%d_%H:%M:%S",
     )
 
     if file_console == "both" or file_console == "console":
@@ -53,9 +64,9 @@ def py_logger(
         file_handler = logging.FileHandler(
             f"{log_path}/{log_date}_{log_name}.log", f"{write_mode}", "utf-8"
         )
-        # file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
+        print(f"{logger_name} at {log_path}/{log_date}_{log_name}.log")
     else:
         pass
     return logger
@@ -95,22 +106,17 @@ def remove_old_log(log_path="here", log_name="None"):
 
 
 if __name__ == "__main__":
-    # set path and name
-    py_path = Path(__file__).parent
-    py_name = Path(__file__).stem
-    log_path_init = f"{py_path}/log"
-
     # set logger
-    remove_old_log(log_path=log_path_init, log_name=py_name)
+    remove_old_log(log_path=log_path, log_name=py_name)
     log = py_logger(
-        "w", level="INFO", log_path=log_path_init, log_name=py_name, logger_name=py_name
+        "w", level="DEBUG", log_path=log_path, log_name=log_name, logger_name=logger_name
     )
+    # log = py_logger("w","INFO",log_path,log_name,logger_name)
 
     # log test
-    log.info("Test log function")
+    log.debug(f"{__name__} start, logger_name = {logger_name}")
 
     # close log
     close_log(log)
 
-    # this for sub module
     log = get_logger()
