@@ -829,7 +829,9 @@ def reply_yuyan(reply_token):
 
 def reply_double_word_pic(reply_token, message_text):
     if message_text == "MM":
+        log.info("MM")
         double_word_table = models.mm_table
+        log.info(double_word_table)
     elif message_text == "OO":
         double_word_table = models.oo_table
     elif message_text == "CC":
@@ -843,7 +845,10 @@ def reply_double_word_pic(reply_token, message_text):
         # package_num = 1
     else:
         package_num = package_num + 1
+    package_num = str(package_num)
+    log.info(package_num)
     picture_list = double_word_table.objects.filter(package=package_num).order_by("id")
+    log.info(picture_list)
     bubble_container = []
     for num, picture in enumerate(picture_list):
         picture_text = picture.package_name

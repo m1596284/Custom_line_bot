@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
+
 from pathlib import Path
 import os
 import json
@@ -18,7 +19,7 @@ py_path = Path(__file__).parent
 
 with open(f"{str(py_path)}/config/line_bot_server.json", encoding="utf-8") as f:
     server_json = json.load(f)
-secret_key = server_json["secret_key"]
+    secret_key = server_json["secret_key"]
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,15 +85,37 @@ WSGI_APPLICATION = "iu_server.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# this is the default setting to use sqlite
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+#         "OPTIONS": {
+#             "timeout": 10,  # in seconds
+#             # see also
+#             # https://docs.python.org/3.7/library/sqlite3.html#sqlite3.connect
+#         },
+#     }
+# }
+
+# this is the new setting to use postgresql
+# set db config
+with open(f"{str(py_path)}/config/postgresql_config.json", encoding="utf-8") as f:
+    file_json = json.load(f)
+    db_host = file_json["nmk_db"]["db_host"]
+    db_port = file_json["nmk_db"]["db_port"]
+    db_name = file_json["nmk_db"]["db_name"]
+    user_name = file_json["nmk_db"]["user_name"]
+    user_password = file_json["nmk_db"]["user_password"]
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-        "OPTIONS": {
-            "timeout": 10,  # in seconds
-            # see also
-            # https://docs.python.org/3.7/library/sqlite3.html#sqlite3.connect
-        },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': db_name,
+        'USER': user_name,
+        'PASSWORD': user_password,
+        'HOST': db_host,
+        'PORT': db_port,
     }
 }
 

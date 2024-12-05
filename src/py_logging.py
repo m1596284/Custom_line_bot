@@ -61,9 +61,7 @@ def py_logger(
             log_name = f"{Path(__file__).stem}"
         else:
             log_name = f"{log_name}"
-        file_handler = logging.FileHandler(
-            f"{log_path}/{log_date}_{log_name}.log", f"{write_mode}", "utf-8"
-        )
+        file_handler = logging.FileHandler(f"{log_path}/{log_date}_{log_name}.log", f"{write_mode}", "utf-8")
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
         print(f"{logger_name} at {log_path}/{log_date}_{log_name}.log")
@@ -108,9 +106,7 @@ def remove_old_log(log_path="here", log_name="None"):
 if __name__ == "__main__":
     # set logger
     remove_old_log(log_path=log_path, log_name=py_name)
-    log = py_logger(
-        "w", level="DEBUG", log_path=log_path, log_name=log_name, logger_name=logger_name
-    )
+    log = py_logger("w", level="DEBUG", log_path=log_path, log_name=log_name, logger_name=logger_name)
     # log = py_logger("w","INFO",log_path,log_name,logger_name)
 
     # log test
